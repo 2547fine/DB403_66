@@ -1,5 +1,15 @@
 <?php
-  require 'connect.php';
+    require 'connect.php';
+    if (isset($_POST['submit'])) {
+      $studentID = $_POST['studentID'];
+      $studentName = $_POST['studetName'];
+      $majorID = $_POST['major'];
+      $password =password_hash ($_POST['password'], PASSWORD_DEFAULT);
+      $sql = "insert into student(studentId,studentName,majorID,password) 
+      values('{$studentID}','{$studentName}','{$majorID}','{$password}')";
+      echo $sql;
+      $conn->query($sql);
+    }
 ?>
 <html lang="en">
   <head>
@@ -24,47 +34,57 @@
 
       
     </style>
+    <script>
+      function validate() {
+        let p1 = document.querySelector('#password').value;
+        let p2 = document.querySelector('#re-password').value;
+        if (p1 != p2) {
+          alert('Passwords are not identical.');
+          event.preventDefaul();
+        }
+      }
+      </script>
   </head>
   <body class="d-flex align-items-center py-4 bg-body-tertiary">
     <main class="form-signin w-100 m-auto">
-      <form>
+      <form action="signup.php" method="post" onsubmit="validate()">
         <img class="mb-4" src="images/Fanta_EN Banner.png" alt="" width="72" >
         <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
     
         <div class="form-floating">
-          <input type="text" class="form-control" id="floatingEmail" placeholder="">
+          <input required name="studentID" type="text" class="form-control" id="floatingEmail" placeholder="">
           <label for="student-id">Student ID</label>
         </div>
         <div class="form-floating">
-          <input type="text" class="form-control" id="floatingEmail" placeholder="">
+          <input name="studetName" type="text" class="form-control" id="floatingEmail" placeholder="">
           <label for="student-name">Student Name</label>
         </div>
         <div class="form-floating">
-          <select class="form-select"id="major">
+          <select  name="major" class="form-select" id="major">
           <?php
         $sql = 'select * from major order by facuity';
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
-          echo "<option velue='{$row['majorID']}'>
+          echo "<option value='{$row['majorID']}'>
           {$row['facuity']}-{$row['majorName']}
           </option>";
         }
         $conn->close();
         ?>
           </select>
-          <label for="major-id">Major ID</label>
+          <label for="major">Major</label>
         </div>
        
         <div class="form-floating">
-          <input type="password" class="form-control" id="floatingPassword" placeholder="">
+          <input required name="password" type="password" class="form-control" id="password" placeholder="">
           <label for="password">Password</label>
         </div>
         <div class="form-floating">
-          <input type="password" class="form-control" id="floatingPassword" placeholder="">
+          <input required type="password" class="form-control" id="re-password" placeholder="">
           <label for="retypa-password">Retype Password</label>
         </div>
     
-        <button class="btn btn-primary w-100 py-2" type="submit">Sign up</button>
+        <button name="submit" class="btn btn-primary w-100 py-2" type="submit">Sign up</button>
         <!-- <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p> -->
       </form>
     </main>
