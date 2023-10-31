@@ -1,4 +1,5 @@
 <?php
+  session_start();
     require 'connect.php';
     if (isset($_POST['submit'])) {
       require 'connect.php';
@@ -11,18 +12,24 @@
       $row = $result ->fetch_assoc();
       if($row) {
         if(password_verify($password,$row['password'])) {
-          echo('Ta Da!!!');
+          $_SESSION['user'] = ['studentId'=>$sow['studentId'],
+          'studentName'=>$sow['studentName']];
+          header('location:index.php');
+          exit;
         }
         else {
-          echo('Password is not correct!');
+          $err = 'Password is not correct!';
         }
       }
       else {
-        echo('Student ID not found!');
+        $err = 'Student ID not found!';
       }
     }
     catch(Exception $e) {
       echo $e;
+    }
+    finally {
+      $conn->close();
     }
   }
   ?>
@@ -64,9 +71,13 @@
   <body class="d-flex align-items-center py-4 bg-body-tertiary">
     <main class="form-signup w-100 m-auto">
       <form method="post">
-        <!-- <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
+      <img class="mb-4" src="images/Fanta_EN Banner.png" alt="" width="72" >
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-    
+    <?php
+      if(isset($err)){
+        echo "<div class='alert alert-danger'>$err</div>";
+      }
+    ?>
         <div class="form-floating">
           <input name="student_id" type="text" class="form-control" id="floatingEmail" placeholder="Email address">
           <label for="floatingEmail">Student ID</label>
@@ -77,8 +88,8 @@
         </div>
     
         <button class="btn btn-primary w-100 py-2" type="submit" name="submit" >Sign in</button>
-        <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!" class="link-danger">Register</a></p>
-        <!-- <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p> -->
+        <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="signup.php" class="link-danger">Sign Up</a></p>
+        <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p>
       </form>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

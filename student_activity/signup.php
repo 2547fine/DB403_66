@@ -1,4 +1,5 @@
 <?php
+session_start();
     require 'connect.php';
     if (isset($_POST['submit'])) {
       $studentID = $_POST['studentID'];
@@ -7,8 +8,22 @@
       $password =password_hash ($_POST['password'], PASSWORD_DEFAULT);
       $sql = "insert into student(studentId,studentName,majorID,password) 
       values('{$studentID}','{$studentName}','{$majorID}','{$password}')";
-      echo $sql;
-      $conn->query($sql);
+      
+      try {
+        $conn->query($sql);
+        $_SESSION['user'] = [
+          'studentId'=>$studentID,
+          'studentName'=>$studentName
+        ];
+        header('location:index.php');
+        exit;
+      }
+      catch(mysqli_sql_exception) {
+        $err = " StudentID $studentID already exists.";
+      }
+      catch(Exception $e) {
+        $err = $e;
+      }
     }
 ?>
 <html lang="en">
@@ -50,7 +65,11 @@
       <form action="signup.php" method="post" onsubmit="validate()">
         <img class="mb-4" src="images/Fanta_EN Banner.png" alt="" width="72" >
         <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
-    
+    <?php
+    if(isset($err)) {
+      echo "<div class='alert alert-danger'>$err</div>";
+    }
+    ?>
         <div class="form-floating">
           <input required name="studentID" type="text" class="form-control" id="floatingEmail" placeholder="">
           <label for="student-id">Student ID</label>
@@ -85,7 +104,7 @@
         </div>
     
         <button name="submit" class="btn btn-primary w-100 py-2" type="submit">Sign up</button>
-        <!-- <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p> -->
+        <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p>
       </form>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
