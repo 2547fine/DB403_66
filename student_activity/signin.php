@@ -12,8 +12,8 @@
       $row = $result ->fetch_assoc();
       if($row) {
         if(password_verify($password,$row['password'])) {
-          $_SESSION['user'] = ['studentId'=>$sow['studentId'],
-          'studentName'=>$sow['studentName']];
+          $_SESSION['user'] = ['studentId'=>$row['studentID'],
+          'studentName'=>$row['studentName']];
           header('location:index.php');
           exit;
         }
