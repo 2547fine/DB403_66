@@ -13,6 +13,7 @@ require 'connect.php';
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Student Activity</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   </head>
   <body>
   <div class="container">
@@ -25,15 +26,27 @@ require 'connect.php';
       <ul class="nav nav-pills">
          <li class="nav-item"><a id="nav-activity" href="index.php" class="nav-link">Activity</a></li>
         <li class="nav-item"><a id="nav-report" href="report.php" class="nav-link">Report</a></li>
-        <li class="nav-item"><?php echo $_SESSION['user']['studentName'];?></li>
       </ul>
       <div class="dropdown text-end ms-3">
           <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+<?php
+$sql = "SELECT image FROM student WHERE studentID = '{$_SESSION['user']['studentId']}'";
+$result=$conn->query($sql);
+$image=$result->fetch_assoc()['image'];  
+if($image) { 
+      echo "<img src='images/profile/$image' class='rounded-circle' height='42px'>";
+}
+else {
+  echo'<span class="mt-5 material-symbols-outlined"
+  style="font-size:42px:">
+  face_6
+</span>';
+}
+?>
+         
           </a>
           <ul class="dropdown-menu text-small">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><div calss="dropdown-item text-primary"><?php echo $_SESSION['user']['studentName'];?></div></li>
             <li><a class="dropdown-item" href="profile.php">Profile</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Sign out</a></li>
